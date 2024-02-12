@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, url_for, redirect
+from flask import Flask, request, render_template, jsonify, redirect, url_for
 import requests
 import urllib.parse
 import datetime
@@ -30,33 +30,28 @@ def update_channels():
 
 @app.route('/')
 def home_page():
-    # fetch list of channels from server
-    return render_template("home.html", channels=update_channels())
+    channelId = request.args.get('channelId', default=None, type=str)
+    channels = update_channels()
+    # Fetch messages for the first channel initially
+    if channelId:
+        channelId = next((channel['endpoint'] for channel in channels if channel['endpoint'] == channelId), None)
+        messages = fetch_messages(channelId)
+        return render_template("home.html", channels=channels, messages=messages, initialChannelId=channelId)
+    else:
+        default_channel = channels[0]['endpoint'] if channels else None
+        messages = fetch_messages(default_channel)
+        return render_template("home.html", channels=channels, messages=messages, initialChannelId=default_channel)
 
 
-@app.route('/show')
-def show_channel():
-    # fetch list of messages from channel
-    show_channel = request.args.get('channel', None)
-    if not show_channel:
-        return "No channel specified", 400
-    channel = None
-    for c in update_channels():
-        if c['endpoint'] == urllib.parse.unquote(show_channel):
-            channel = c
-            break
-    if not channel:
-        return "Channel not found", 404
-    response = requests.get(channel['endpoint'], headers={'Authorization': 'authkey ' + channel['authkey']})
-    if response.status_code != 200:
-        return "Error fetching messages: "+str(response.text), 400
-    messages = response.json()
-    return render_template("channel.html", channel=channel, messages=messages)
+@app.route('/get_messages/<channel_id>')
+def get_messages(channel_id):
+    channel_id = urllib.parse.unquote(channel_id)
+    messages = fetch_messages(channel_id)
+    return jsonify(messages)
 
 
-@app.route('/post', methods=['POST'])
+@app.route('/post_message', methods=['POST'])
 def post_message():
-    # send message to channel
     post_channel = request.form['channel']
     if not post_channel:
         return "No channel specified", 400
@@ -75,7 +70,18 @@ def post_message():
                              json={'content': message_content, 'sender': message_sender, 'timestamp': message_timestamp})
     if response.status_code != 200:
         return "Error posting message: "+str(response.text), 400
-    return redirect(url_for('show_channel')+'?channel='+urllib.parse.quote(post_channel))
+    return redirect(url_for('home_page'))
+
+
+def fetch_messages(channel_id):
+    if not channel_id:
+        return []
+    channels = update_channels()
+    channel = next((channel for channel in channels if channel['endpoint'] == channel_id), None)
+    response = requests.get(channel["endpoint"], headers={'Authorization': 'authkey ' + channel['authkey']})
+    if response.status_code != 200:
+        return [{"sender": "Error", "content": "Error fetching messages"}]
+    return response.json()
 
 
 # Start development web server
