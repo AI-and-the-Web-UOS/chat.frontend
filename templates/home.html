@@ -28,22 +28,28 @@
             </div>
             <div class="flex-1 rounded-t-xl shadow-xl bg-white">
                 <div class="flex flex-col h-full">
-                    <div class="flex-grow overflow-y-auto">
+                    <div class="flex-grow overflow-y-auto flex flex-col-reverse">
                         <ul>
                             {% for message in messages %}
                                 <li>
-                                    <div class="flex justify-start items-center w-full h-20">
-                                        <p>{{message}}</p>
+                                    <div class="flex flex-col justify-start items-start h-20 ml-12 mr-12 my-3">
+                                        <p class="text-blue-300 font-bold mb-0.5">{{message.sender}}</p>
+                                        <p>{{message.content}}</p>
                                     </div>
-                                    <hr/>
                                 </li>
                             {% endfor %}
                         </ul>
                     </div>
-                    <div class="flex justify-between space-x-2 items-center py-4 px-10">
-                        <input type="text" class="w-full h-12 border-2 rounded-xl p-4 outline-none" placeholder="Type a message"/>
-                        <button class="bg-blue-200 text-white px-4 py-2 rounded-xl text-black">SEND</button>
-                    </div>
+                    <form class="flex justify-between space-x-2 items-center py-4 px-10 pb-8" action="{{ url_for('post_message') }}" method="post">
+                            <input type="hidden" name="channel" value="{{initialChannelId}}">
+                            <div>
+                                <input type="text" name="sender" class="w-full h-12 border-2 rounded-xl p-4 outline-none" placeholder="User"/>
+                            </div>
+                            <div class="w-full">
+                                <input type="text" name="content" class="w-full h-12 border-2 rounded-xl p-4 outline-none" placeholder="Type a message"/>
+                            </div>
+                            <button type="submit" class="bg-blue-200 px-4 py-2 rounded-xl text-black"><img src="../static/images/send_icon.png" width="20px" height="20px"></button>
+                    </form>
                 </div>
             </div>
         </div>

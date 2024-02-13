@@ -70,7 +70,7 @@ def post_message():
                              json={'content': message_content, 'sender': message_sender, 'timestamp': message_timestamp})
     if response.status_code != 200:
         return "Error posting message: "+str(response.text), 400
-    return redirect(url_for('home_page'))
+    return redirect(url_for('home_page', channelId=channel['endpoint']))
 
 
 def fetch_messages(channel_id):
