@@ -10,31 +10,39 @@
 </head>
 <body class="font-poppins">
     <div class="flex flex-col h-screen w-screen max-h-screen max-w-screen">
-        <header class="bg-blue-200 text-white p-4">
-            <h1 class="text-2xl font-bold text-black text-center">COXI CHAT</h1>
-        </header>
-        <div class="flex-grow flex px-4 pt-4 space-x-4 bg-gray-100 max-h-full" style="max-height: calc(100% - 4rem)">
-            <div class="w-96 h-full overflow-y-auto rounded-t-xl shadow-xl bg-white">
+        <div class="flex-grow flex max-h-full">
+            <div class="w-96 h-full overflow-y-auto" style="background-color: #181818">
+                <div>
+                    <h1 class="text-xl font-bold text-center p-4 text-white">CHANNELS</h1>
+                </div>
                 <ul>
                     {% for channel in channels %}
                         <li>
-                            <a href="{{ url_for('home_page', channelId=channel.endpoint) }}" class="flex justify-center items-center w-full h-20 {% if channel.endpoint == initialChannelId %}font-bold border-r-4 border-blue-200{% endif %} hover: cursor-pointer">
-                                <p>{{channel.name}}</p>
+                            <a href="{{ url_for('home_page', channelId=channel.endpoint) }}" class="flex justify-center items-center p-2 rounded-2xl w-full h-20 {% if channel.endpoint == initialChannelId %}font-bold bg-customGray {% endif %} hover: cursor-pointer">
+                                <p class="text-white">{{channel.name}}</p>
                             </a>
-                            <hr/>
                         </li>
                     {% endfor %}
                 </ul>
             </div>
-            <div class="flex-1 rounded-t-xl shadow-xl bg-white">
+            <div class="flex-1 px-10" style="background-color: #212121">
                 <div class="flex flex-col h-full">
                     <div class="flex-grow overflow-y-auto flex flex-col-reverse">
                         <ul>
                             {% for message in messages %}
                                 <li>
-                                    <div class="flex flex-col justify-start items-start h-20 ml-12 mr-12 my-3">
-                                        <p class="text-blue-300 font-bold mb-0.5">{{message.sender}}</p>
-                                        <p>{{message.content}}</p>
+                                    <div class="flex flex-col justify-start items-start h-20 ml-12 mr-12 my-5">
+                                        <div class="flex flex-row">
+                                            {% if message.sender == 'Harvey Specter'%}
+                                                <img src="../static/images/law_hat.png" style="width: auto; height: 35px" class="mr-2 pt-2">
+                                            {% else %}
+                                                <img src="../static/images/user_icon.png" style="width: auto; height: 35px" class="mr-2 pt-2">
+                                            {% endif %}
+                                            <div class="flex flex-col">
+                                                <p class="text-white text-xl font-bold mb-1">{{message.sender}}</p>
+                                                <p class="text-white">{{message.content}}</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </li>
                             {% endfor %}
@@ -43,12 +51,12 @@
                     <form class="flex justify-between space-x-2 items-center py-4 px-10 pb-8" action="{{ url_for('post_message') }}" method="post">
                             <input type="hidden" name="channel" value="{{initialChannelId}}">
                             <div>
-                                <input type="text" name="sender" class="w-full h-12 border-2 rounded-xl p-4 outline-none" placeholder="User"/>
+                                <input type="text" name="sender" class="w-full h-12 border-2 border-customInputGray rounded-xl p-4 outline-none bg-transparent text-white" placeholder="User"/>
                             </div>
                             <div class="w-full">
-                                <input type="text" name="content" class="w-full h-12 border-2 rounded-xl p-4 outline-none" placeholder="Type a message"/>
+                                <input type="text" name="content" class="w-full h-12 border-2 border-customInputGray rounded-xl p-4 outline-none bg-transparent text-white" placeholder="Type a message"/>
                             </div>
-                            <button type="submit" class="bg-blue-200 px-4 py-2 rounded-xl text-black"><img src="../static/images/send_icon.png" width="20px" height="20px"></button>
+                            <button type="submit" class="bg-button h-12 px-4 py-2 rounded-xl text-black"><img src="../static/images/send_icon.png" width="20px" height="20px"></button>
                     </form>
                 </div>
             </div>

@@ -8,7 +8,14 @@ module.exports = {
     extend: {
       fontFamily:{
         'poppins': ['Poppins', 'sans-serif']
-      }
+      },
+      backgroundColor: {
+        customGray: '#2E2E2E',
+        button: '#555555',
+      },
+      borderColor: {
+        customInputGray: '#555555',
+      },
     },
   },
   plugins: [],
