@@ -4,6 +4,12 @@
 
 Our chatbot is specifically designed to assist users with inquiries related to German law while also being not the nicest person in the world. Leveraging the Retrieval-Augmented Generation (RAG) technique, the chatbot enhances its performance by dynamically retrieving and integrating relevant legal documents into its responses. This approach ensures that users receive accurate, contextually rich, and up-to-date legal advice, depending strongly on the used llm.
 
+<br />
+<div align="center">
+    <img src="images/interface.png" alt="Retrieval Augmented Generation" width="80%">
+</div>
+<br/>
+
 ## Features
 
 - **German Law Expertise**: Focused expertise in spme German legal matters, based on law books used in the RAG database.
